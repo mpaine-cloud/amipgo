@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    
+    // An admin is anyone who is signed in and has a document in /users with role == 'admin'
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    // User Profile Validation
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'role', 'createdAt']) && 
+             data.keys().size() == 3 &&
+             data.email is string && data.email.size() <= 200 &&
+             data.role is string && data.role == 'admin' &&
+             data.createdAt is number;
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      allow create, update: if isSignedIn() && request.auth.token.email == 'mpaine@amipgo.com' && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    // Post Validation
+    function isValidPost(data) {
+      return data.keys().hasAll(['title', 'slug', 'content', 'coverUrl', 'published', 'authorId', 'authorName', 'views', 'createdAt', 'updatedAt']) &&
+             data.keys().size() == 10 &&
+             data.title is string && data.title.size() <= 200 &&
+             data.slug is string && data.slug.size() <= 200 &&
+             data.content is string && data.content.size() <= 150000 &&
+             data.coverUrl is string && data.coverUrl.size() <= 1000000 &&
+             data.authorName is string && data.authorName.size() <= 100 &&
+             data.published is bool &&
+             data.authorId is string && data.authorId == request.auth.uid &&
+             data.views is number &&
+             data.createdAt is number &&
+             data.updatedAt is number;
+    }
+
+    match /posts/{postId} {
+      // Public can read published posts
+      // Admins can read all posts
+      allow get: if isValidId(postId) && (isAdmin() || resource.data.published == true);
+      allow list: if isAdmin() || resource.data.published == true;
+      
+      allow create: if isAdmin() && isValidId(postId) && isValidPost(incoming()) && incoming().views == 0;
+      
+      allow update: if isValidId(postId) && (
+        (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'slug', 'content', 'coverUrl', 'published', 'authorName', 'authorId', 'updatedAt'])) 
+        ||
+        // Anonymous/Public users can increment views ONLY by 1.
+        (incoming().diff(existing()).affectedKeys().hasOnly(['views']) && incoming().views == existing().views + 1)
+      );
+      
+      allow delete: if isAdmin() && isValidId(postId);
+    }
+
+    // Site Stats Validation
+    function isValidSiteStat(data) {
+      return data.keys().hasAll(['visitors', 'lastUpdate']) &&
+             data.keys().size() == 2 &&
+             data.visitors is number &&
+             data.lastUpdate is number;
+    }
+
+    match /siteStats/{statId} {
+      allow get: if isValidId(statId) && statId == 'main';
+      // Anyone can increment visitors counter
+      allow update: if isValidId(statId) && statId == 'main' &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['visitors', 'lastUpdate']) &&
+        incoming().visitors == existing().visitors + 1;
+      // Admin can create it initially
+      allow create: if isAdmin() && isValidId(statId) && statId == 'main' && isValidSiteStat(incoming());
+    }
+
+    // Lead Validation
+    function isValidLead(data) {
+      let hasRequiredKeys = data.keys().hasAll(['name', 'email', 'acceptsPrivacy', 'createdAt']);
+      let hasValidKeysSize = data.keys().size() >= 4 && data.keys().size() <= 6;
+      let hasValidTypes = data.name is string && data.name.size() <= 200 &&
+                          data.email is string && data.email.size() <= 200 &&
+                          data.acceptsPrivacy is bool && data.createdAt is number;
+      let validWhatsapp = !data.keys().hasAny(['whatsapp']) || (data.whatsapp is string && data.whatsapp.size() <= 50);
+      let validMarketing = !data.keys().hasAny(['acceptsMarketing']) || (data.acceptsMarketing is bool);
+      
+      return hasRequiredKeys && hasValidKeysSize && hasValidTypes && validWhatsapp && validMarketing;
+    }
+
+    match /leads/{leadId} {
+      allow get, list: if isAdmin();
+      allow create: if isValidId(leadId) && isValidLead(incoming());
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Admin users",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["email", "role", "createdAt"]
+    },
+    "Post": {
+      "title": "Blog Post",
+      "description": "A blog post",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "content": { "type": "string" },
+        "coverUrl": { "type": "string" },
+        "published": { "type": "boolean" },
+        "authorId": { "type": "string" },
+        "views": { "type": "number" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["title", "slug", "content", "published", "authorId", "views", "createdAt", "updatedAt"]
+    },
+    "SiteStat": {
+      "title": "Site Stat",
+      "description": "Website statistics",
+      "type": "object",
+      "properties": {
+        "visitors": { "type": "number" },
+        "lastUpdate": { "type": "number" }
+      },
+      "required": ["visitors", "lastUpdate"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "A generated lead from the Workspace tool",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "acceptsPrivacy": { "type": "boolean" },
+        "acceptsMarketing": { "type": "boolean" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["name", "email", "acceptsPrivacy", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Admin users directory"
+    },
+    "posts/{postId}": {
+      "schema": { "$ref": "#/entities/Post" },
+      "description": "Blog posts"
+    },
+    "siteStats/{statId}": {
+      "schema": { "$ref": "#/entities/SiteStat" },
+      "description": "Global website stats"
+    },
+    "leads/{leadId}": {
+      "schema": { "$ref": "#/entities/Lead" },
+      "description": "Captured leads"
+    }
+  }
+}

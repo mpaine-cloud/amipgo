@@ -1,0 +1,2 @@
+Puedes subir las imágenes de perfil (avatares) en esta carpeta.
+Una vez que las subas, asegúrate de actualizar la propiedad `photoUrl` en `src/pages/TeamPage.tsx` con el nombre correcto de cada archivo, por ejemplo: `photoUrl: "/mijail.jpg"`.
