@@ -539,7 +539,7 @@ export default function WorkspacePage() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold font-heading">Calculadora TRL y Match de Fondos</h2>
-                <p className="text-white/50 text-sm">Responde 3 preguntas clave para determinar tu madurez tecnológica y el instrumento ideal.</p>
+                <p className="text-white/50 text-sm">Responde 5 preguntas clave para determinar tu madurez tecnológica y el instrumento ideal.</p>
               </div>
             </div>
 
