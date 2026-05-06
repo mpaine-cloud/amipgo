@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import { auth, db } from "../firebase";
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User } from "firebase/auth";
 import { collection, query, getDocs, doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
-import { Plus, Edit2, Trash2, LogOut, Eye, ArrowLeft, Upload, Loader2 } from "lucide-react";
+import { Plus, Edit2, Trash2, LogOut, Eye, ArrowLeft, Upload, Loader2, Download } from "lucide-react";
 import Markdown from "react-markdown";
 
 interface Post {
@@ -204,6 +204,43 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDeleteLead = async (id: string) => {
+    if (window.confirm("¿Seguro que deseas eliminar este lead? Esta acción no se puede deshacer.")) {
+      try {
+        await deleteDoc(doc(db, "leads", id));
+        fetchData();
+      } catch (err) {
+        console.error(err);
+        alert("Error al eliminar el lead");
+      }
+    }
+  };
+
+  const exportLeadsToCSV = () => {
+    const headers = ['Fecha', 'Nombre', 'Email', 'WhatsApp', 'Acepta Privacidad', 'Acepta Marketing'];
+    const csvContent = [
+      headers.join(','),
+      ...leads.map(l => [
+        new Date(l.createdAt).toLocaleString(),
+        `"${l.name.replace(/"/g, '""')}"`,
+        l.email,
+        l.whatsapp || '',
+        l.acceptsPrivacy ? 'Si' : 'No',
+        l.acceptsMarketing ? 'Si' : 'No'
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `leads_amipgo_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) return <div className="h-screen bg-cream text-white flex items-center justify-center">Cargando...</div>;
 
   if (!user || !isAdmin) {
@@ -278,7 +315,15 @@ export default function AdminDashboard() {
 
         {activeTab === 'leads' ? (
           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-10">
-            <h2 className="text-2xl font-heading font-bold mb-8">Leads (Workspace)</h2>
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-heading font-bold">Leads (Workspace)</h2>
+              <button 
+                onClick={exportLeadsToCSV}
+                className="bg-moss/20 text-moss px-5 py-2 rounded-full font-semibold hover:bg-moss/30 transition-colors flex items-center gap-2"
+              >
+                <Download size={16} /> Exportar CSV
+              </button>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
@@ -288,6 +333,7 @@ export default function AdminDashboard() {
                     <th className="py-3 px-4 font-mono font-normal">Email</th>
                     <th className="py-3 px-4 font-mono font-normal">WhatsApp</th>
                     <th className="py-3 px-4 font-mono font-normal">Permisos</th>
+                    <th className="py-3 px-4 font-mono font-normal">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -303,11 +349,20 @@ export default function AdminDashboard() {
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium w-fit ${lead.acceptsPrivacy ? 'bg-moss/20 text-moss' : 'bg-red-500/20 text-red-400'}`}>Privacidad: {lead.acceptsPrivacy ? 'Sí' : 'No'}</span>
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium w-fit ${lead.acceptsMarketing ? 'bg-moss/20 text-moss' : 'bg-white/10 text-white/50'}`}>Marketing: {lead.acceptsMarketing ? 'Sí' : 'No'}</span>
                       </td>
+                      <td className="py-4 px-4">
+                        <button 
+                          onClick={() => handleDeleteLead(lead.id)}
+                          className="p-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
+                          title="Eliminar Lead"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                   {leads.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-white/50">No hay leads capturados aún.</td>
+                      <td colSpan={6} className="py-8 text-center text-white/50">No hay leads capturados aún.</td>
                     </tr>
                   )}
                 </tbody>

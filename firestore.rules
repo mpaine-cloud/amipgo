@@ -101,6 +101,7 @@ service cloud.firestore {
     match /leads/{leadId} {
       allow get, list: if isAdmin();
       allow create: if isValidId(leadId) && isValidLead(incoming());
+      allow delete: if isAdmin() && isValidId(leadId);
     }
   }
 }
