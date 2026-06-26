@@ -242,6 +242,55 @@ export default function AdminDashboard() {
     document.body.removeChild(link);
   };
 
+  const exportSitemapXML = () => {
+    const publishedPosts = posts.filter(p => p.published);
+    const today = new Date().toISOString().split('T')[0];
+
+    const staticUrls = [
+      { loc: 'https://www.amipgo.com/', priority: '1.0', changefreq: 'monthly' },
+      { loc: 'https://www.amipgo.com/workspace', priority: '0.9', changefreq: 'monthly' },
+      { loc: 'https://www.amipgo.com/blog', priority: '0.8', changefreq: 'weekly' },
+      { loc: 'https://www.amipgo.com/equipo', priority: '0.7', changefreq: 'monthly' },
+      { loc: 'https://www.amipgo.com/privacidad', priority: '0.3', changefreq: 'yearly' },
+    ];
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+    staticUrls.forEach(url => {
+      xml += `  <url>\n`;
+      xml += `    <loc>${url.loc}</loc>\n`;
+      xml += `    <lastmod>${today}</lastmod>\n`;
+      xml += `    <changefreq>${url.changefreq}</changefreq>\n`;
+      xml += `    <priority>${url.priority}</priority>\n`;
+      xml += `  </url>\n`;
+    });
+
+    publishedPosts.forEach(post => {
+      const lastmod = post.updatedAt 
+        ? new Date(post.updatedAt).toISOString().split('T')[0] 
+        : (post.createdAt ? new Date(post.createdAt).toISOString().split('T')[0] : today);
+      xml += `  <url>\n`;
+      xml += `    <loc>https://www.amipgo.com/blog/${post.slug}</loc>\n`;
+      xml += `    <lastmod>${lastmod}</lastmod>\n`;
+      xml += `    <changefreq>weekly</changefreq>\n`;
+      xml += `    <priority>0.6</priority>\n`;
+      xml += `  </url>\n`;
+    });
+
+    xml += `</urlset>\n`;
+
+    const blob = new Blob([xml], { type: 'application/xml;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "sitemap.xml");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
       <>
@@ -487,12 +536,20 @@ export default function AdminDashboard() {
           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-10">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-heading font-bold">Listado de Artículos</h2>
-              <button 
-                onClick={() => setEditingPost({ title: '', content: '', authorName: 'Equipo amipGO', published: false })}
-                className="bg-moss/20 text-moss px-5 py-2 rounded-full font-semibold hover:bg-moss/30 transition-colors flex items-center gap-2"
-              >
-                <Plus size={16} /> Crear
-              </button>
+              <div className="flex gap-3">
+                <button 
+                  onClick={exportSitemapXML}
+                  className="bg-moss/20 text-moss px-5 py-2 rounded-full font-semibold hover:bg-moss/30 transition-colors flex items-center gap-2"
+                >
+                  <Download size={16} /> Generar Sitemap
+                </button>
+                <button 
+                  onClick={() => setEditingPost({ title: '', content: '', authorName: 'Equipo amipGO', published: false })}
+                  className="bg-moss/20 text-moss px-5 py-2 rounded-full font-semibold hover:bg-moss/30 transition-colors flex items-center gap-2"
+                >
+                  <Plus size={16} /> Crear
+                </button>
+              </div>
             </div>
 
             <div className="divide-y divide-white/10">
