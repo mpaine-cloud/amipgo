@@ -1,10 +1,17 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function PrivacyPage() {
   return (
     <div className="bg-white min-h-screen text-charcoal font-sans selection:bg-moss selection:text-white flex flex-col">
+      <SEO 
+        title="Política de Privacidad | Amipgo"
+        description="Consulta nuestra política de privacidad sobre el tratamiento confidencial y resguardo de datos en el Workspace Estratégico."
+        url="https://www.amipgo.com/privacidad"
+        keywords="politica de privacidad, amipgo, proteccion de datos, privacidad"
+      />
       <header className="bg-white border-b border-black/5 py-6 px-6 md:px-12 sticky top-0 z-50 flex items-center">
         <Link to="/" className="inline-flex items-center gap-2 text-charcoal/70 hover:text-moss font-medium transition-colors">
           <ArrowLeft size={18} /> Volver al Inicio

@@ -6,6 +6,7 @@ import { toPng } from "html-to-image";
 import { Logo } from "../components/Logo";
 import { db } from "../firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
+import SEO from "../components/SEO";
 
 type QuizState = {
   step: number;
@@ -492,6 +493,12 @@ export default function WorkspacePage() {
 
   return (
     <div className="min-h-screen bg-charcoal text-white pt-24 pb-32">
+      <SEO 
+        title="Workspace Estratégico | Calculadora TRL y Fondos | Amipgo"
+        description="Utiliza nuestra Calculadora TRL y de Fondos para encontrar tu instrumento de financiamiento ideal, y el Simulador de Rúbricas para medir la competitividad de tu postulación."
+        url="https://www.amipgo.com/workspace"
+        keywords="workspace estrategico, calculadora trl, simulador corfo, evaluar proyecto, fondos corfo, fondos sercotec, checklist de postulacion, reporte estrategico"
+      />
       <div className="max-w-6xl mx-auto px-6">
         <Link to="/" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors mb-8">
           <ArrowLeft size={16} /> Volver al Inicio

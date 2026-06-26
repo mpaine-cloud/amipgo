@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Linkedin, Rocket, ArrowRight } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function TeamPage() {
   const team = [
@@ -40,6 +41,12 @@ export default function TeamPage() {
 
   return (
     <div className="bg-charcoal text-white min-h-screen pt-32 flex flex-col">
+      <SEO 
+        title="Equipo y Experiencia | Amipgo"
+        description="Conoce al equipo de Amipgo. Combinamos comunicación estratégica, experiencia pública (SERCOTEC) y neurociencia del comportamiento para estructurar propuestas de financiamiento altamente competitivas."
+        url="https://www.amipgo.com/equipo"
+        keywords="equipo amipgo, maria asuncion ilabaca, mijail painecura, mip traducciones, neucos, asesores corfo, consultores sercotec"
+      />
       <Navbar />
 
       <main className="flex-grow">

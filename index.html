@@ -2,11 +2,39 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    
-    <!-- Etiquetas para Vista Previa en WhatsApp / Redes Sociales (Open Graph) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="%VITE_GSC_VERIFICATION_ID%" />
+
+    <!-- Google Analytics (gtag.js) dynamic loading -->
+    <script>
+      (function() {
+        const gaId = "%VITE_GA_MEASUREMENT_ID%";
+        if (gaId && !gaId.startsWith('%') && gaId !== "undefined" && gaId !== "") {
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+          document.head.appendChild(script);
+
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', gaId);
+        }
+      })();
+    </script>
+
+    <!-- Meta Etiquetas de Respaldo (Fallback SEO) -->
+    <title>Amipgo | Laboratorio Digital para Levantar Capital</title>
+    <meta name="description" content="Tu hoja de ruta para levantar capital y crecer. Encuentra las pautas, estrategias y el conocimiento necesario para adjudicarte fondos públicos (CORFO, SERCOTEC) con éxito." />
+    <meta name="keywords" content="amipgo, laboratorio digital, levantar capital, fondos publicos, corfo, sercotec, startups chile" />
+
+    <!-- Open Graph (Facebook / WhatsApp) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Amipgo" />
-    <meta property="og:title" content="Amipgo | Laboratorio Digital" />
+    <meta property="og:title" content="Amipgo | Laboratorio Digital para Levantar Capital" />
     <meta property="og:description" content="Tu hoja de ruta para levantar capital y crecer. Encuentra las pautas, estrategias y el conocimiento necesario para adjudicarte fondos con éxito." />
     <meta property="og:image" content="https://www.amipgo.com/og-image-perfect.jpg" />
     <meta property="og:image:secure_url" content="https://www.amipgo.com/og-image-perfect.jpg" />
@@ -14,25 +42,16 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/jpeg" />
 
-    <!-- Fallback tags para clientes de WhatsApp o antiguos -->
-    <meta itemprop="name" content="Amipgo | Laboratorio Digital" />
-    <meta itemprop="description" content="Tu hoja de ruta para levantar capital y crecer. Encuentra las pautas, estrategias y el conocimiento necesario para adjudicarte fondos con éxito." />
-    <meta itemprop="image" content="https://www.amipgo.com/og-image-perfect.jpg" />
-    <link rel="image_src" href="https://www.amipgo.com/og-image-perfect.jpg" />
-
-    <!-- Etiquetas para Vista Previa en Twitter -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Amipgo | Laboratorio Digital" />
+    <meta name="twitter:title" content="Amipgo | Laboratorio Digital para Levantar Capital" />
     <meta name="twitter:description" content="Tu hoja de ruta para levantar capital y crecer. Encuentra las pautas, estrategias y el conocimiento necesario para adjudicarte fondos con éxito." />
     <meta name="twitter:image" content="https://www.amipgo.com/og-image-perfect.jpg" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Laboratorio Digital de Amipgo. Tu hoja de ruta para levantar capital y crecer." />
-    <title>Amipgo | Laboratorio Digital</title>
+    <link rel="image_src" href="https://www.amipgo.com/og-image-perfect.jpg" />
   </head>
   <body class="bg-charcoal">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

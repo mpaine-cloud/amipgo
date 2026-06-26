@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { auth, db } from "../firebase";
+import SEO from "../components/SEO";
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User } from "firebase/auth";
 import { collection, query, getDocs, doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
 import { Plus, Edit2, Trash2, LogOut, Eye, ArrowLeft, Upload, Loader2, Download } from "lucide-react";
@@ -241,11 +242,19 @@ export default function AdminDashboard() {
     document.body.removeChild(link);
   };
 
-  if (loading) return <div className="h-screen bg-cream text-white flex items-center justify-center">Cargando...</div>;
+  if (loading) {
+    return (
+      <>
+        <SEO title="Panel de Administración | Amipgo" description="Cargando panel de administración..." robots="noindex, nofollow" />
+        <div className="h-screen bg-cream text-white flex items-center justify-center">Cargando...</div>
+      </>
+    );
+  }
 
   if (!user || !isAdmin) {
     return (
       <div className="h-screen bg-cream text-white flex flex-col items-center justify-center px-4">
+        <SEO title="Acceso Restringido | Amipgo" description="Inicia sesión como administrador." robots="noindex, nofollow" />
         <h1 className="text-3xl font-heading font-bold mb-4">Administración</h1>
         {user ? (
           <p className="mb-6 opacity-60">Tu cuenta ({user.email}) no tiene permisos de administrador.</p>
@@ -264,6 +273,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-cream text-white pb-20">
+      <SEO title="Panel de Administración | Amipgo" description="Panel de administración de Amipgo." robots="noindex, nofollow" />
       <Navbar />
       
       <main className="pt-32 px-6 max-w-6xl mx-auto">

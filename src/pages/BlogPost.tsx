@@ -7,6 +7,7 @@ import { useParams, Link } from "react-router-dom";
 import { Calendar, Eye, ArrowLeft, User } from "lucide-react";
 import Markdown from "react-markdown";
 import { cachedPosts } from "./BlogIndex";
+import SEO from "../components/SEO";
 
 interface Post {
   id: string;
@@ -69,6 +70,7 @@ export default function BlogPost() {
   if (loading) {
     return (
       <>
+        <SEO title="Cargando artículo... | Blog de Amipgo" description="Cargando contenido del blog de Amipgo..." robots="noindex, nofollow" />
         <Navbar />
         <main className="pt-32 pb-20 min-h-screen">
           <article className="max-w-3xl mx-auto px-6 animate-pulse">
@@ -103,6 +105,7 @@ export default function BlogPost() {
   if (error || !post) {
     return (
       <>
+        <SEO title="Artículo no encontrado | Blog de Amipgo" description="El artículo solicitado no existe o fue removido." robots="noindex, nofollow" />
         <Navbar />
         <div className="min-h-screen pt-40 px-6 text-center">
           <h1 className="text-3xl font-heading font-bold mb-4">{error}</h1>
@@ -112,8 +115,21 @@ export default function BlogPost() {
     );
   }
 
+  const cleanDescription = post.content
+    .replace(/<[^>]+>/g, '')
+    .replace(/[#*`_\-~]/g, '')
+    .substring(0, 150)
+    .trim() + '...';
+
   return (
     <>
+      <SEO 
+        title={`${post.title} | Blog de Amipgo`}
+        description={cleanDescription}
+        image={post.coverUrl || undefined}
+        url={`https://www.amipgo.com/blog/${post.slug}`}
+        keywords={`blog amipgo, ${post.title}, innovacion, financiamiento, corfo`}
+      />
       <Navbar />
       <main className="pt-32 pb-20 min-h-screen">
         <article className="max-w-3xl mx-auto px-6">

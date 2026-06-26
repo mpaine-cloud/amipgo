@@ -5,6 +5,7 @@ import { collection, query, where, getDocs, onSnapshot } from "firebase/firestor
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
 import { Calendar, User, Eye, ArrowRight } from "lucide-react";
+import SEO from "../components/SEO";
 
 interface Post {
   id: string;
@@ -55,6 +56,12 @@ export default function BlogIndex() {
 
   return (
     <>
+      <SEO 
+        title="Centro de Recursos Estratégicos | Blog de Amipgo"
+        description="Accede a las guías definitivas y manuales prácticos para estructurar proyectos de innovación y entender los criterios de evaluación de fondos públicos."
+        url="https://www.amipgo.com/blog"
+        keywords="blog amipgo, recursos para emprendedores, guias de postulacion, fondos de innovacion, postular a corfo, subsidios de gobierno"
+      />
       <Navbar />
       <main className="pt-32 pb-20 min-h-screen">
         <div className="max-w-6xl mx-auto px-6">
