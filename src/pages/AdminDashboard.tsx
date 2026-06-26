@@ -37,6 +37,7 @@ export default function AdminDashboard() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [stats, setStats] = useState({ visitors: 0 });
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const [editingPost, setEditingPost] = useState<Partial<Post> | null>(null);
   const [saveStatus, setSaveStatus] = useState("");
@@ -98,12 +99,14 @@ export default function AdminDashboard() {
   };
 
   const handleLogin = async () => {
+    setLoginError(null);
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
     try {
       await signInWithPopup(auth, provider);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setLoginError(err.message || String(err));
     }
   };
 
@@ -309,6 +312,11 @@ export default function AdminDashboard() {
           <p className="mb-6 opacity-60">Tu cuenta ({user.email}) no tiene permisos de administrador.</p>
         ) : (
           <p className="mb-6 opacity-60">Inicia sesión como administrador para continuar.</p>
+        )}
+        {loginError && (
+          <p className="mb-6 text-red-400 text-sm max-w-md text-center bg-red-500/10 p-4 rounded-2xl border border-red-500/20 font-mono">
+            {loginError}
+          </p>
         )}
         <button 
           onClick={handleLogin}
