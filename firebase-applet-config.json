@@ -1,10 +1,10 @@
 {
-  "projectId": "gen-lang-client-0636779472",
-  "appId": "1:648236362902:web:7bb2b998b733c503a126b7",
-  "apiKey": "AIzaSyBRtcz_ODQ3RjPbrX3e2vKzb68jOHKV3rc",
-  "authDomain": "gen-lang-client-0636779472.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-87dc62a9-44b3-42ff-9fed-a50020776cc7",
-  "storageBucket": "gen-lang-client-0636779472.firebasestorage.app",
-  "messagingSenderId": "648236362902",
-  "measurementId": ""
+  "projectId": "amipgo-1687c",
+  "appId": "1:159932925915:web:0931eb24bdfc08c15649fe",
+  "apiKey": "AIzaSyACQ4bvjHYWj2F1G4q6N9Y87h2m5YnPQ88",
+  "authDomain": "amipgo-1687c.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "amipgo-1687c.firebasestorage.app",
+  "messagingSenderId": "159932925915",
+  "measurementId": "G-69ZMSKX5ZB"
 }
